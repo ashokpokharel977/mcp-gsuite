@@ -1,4 +1,4 @@
-# @modelcontextprotocol/mcp-server-gsuite
+# mcp-server-gsuite
 
 [![CI](https://github.com/ashokpokharel977/mcp-gsuite/actions/workflows/ci.yml/badge.svg)](https://github.com/ashokpokharel977/mcp-gsuite/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/%40modelcontextprotocol%2Fmcp-server-gsuite.svg)](https://www.npmjs.com/package/@modelcontextprotocol/mcp-server-gsuite)
@@ -32,7 +32,7 @@ MCP server for interacting with Google Drive, Sheets, and Docs. This package pro
 ## Installation
 
 ```bash
-npm install @modelcontextprotocol/mcp-server-gsuite
+npm install @ashokpokharel977/mcp-server-gsuite
 ```
 
 ## Setup
@@ -60,7 +60,7 @@ docker run -i --rm \
   -e GOOGLE_OAUTH_PATH=/app/oauth-keys.json \
   -e GOOGLE_CREDENTIALS_PATH=/app/credentials/credentials.json \
   -p 3000:3000 \
-  @modelcontextprotocol/mcp-server-gsuite auth
+  @ashokpokharel977/mcp-server-gsuite auth
 ```
 
 Server configuration:
@@ -75,7 +75,7 @@ Server configuration:
         "--rm",
         "-v", "mcp-gsuite:/app/credentials",
         "-e", "GOOGLE_CREDENTIALS_PATH=/app/credentials/credentials.json",
-        "@modelcontextprotocol/mcp-server-gsuite"
+        "@ashokpokharel977/mcp-server-gsuite"
       ]
     }
   }
@@ -110,7 +110,7 @@ npx @modelcontextprotocol/inspector node dist/index.js -e GOOGLE_CREDENTIALS_PAT
 ```
 1. Running Remote 
 ```bash
-npx @modelcontextprotocol/inspector npx @modelcontextprotocol/mcp-server-gsuite -e GOOGLE_CREDENTIALS_PATH="$HOME/.google/server-creds.json" -e GOOGLE_OAUTH_PATH="$HOME/.google/oauth.keys.json"
+npx @modelcontextprotocol/inspector npx @ashokpokharel977/mcp-server-gsuite -e GOOGLE_CREDENTIALS_PATH="$HOME/.google/server-creds.json" -e GOOGLE_OAUTH_PATH="$HOME/.google/oauth.keys.json"
 ```
 ## Development
 
