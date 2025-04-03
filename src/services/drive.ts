@@ -1,5 +1,5 @@
 import { google, drive_v3 } from 'googleapis';
-import { GoogleService } from '@services/base.js';
+import { GoogleService } from '@/services/base.js';
 import {
   SearchInput,
   CreateFolder,
@@ -8,7 +8,7 @@ import {
   GetFile,
   ListFiles,
   UpdateFileMetadata,
-} from '../types/schemas.js';
+} from '@/types/schemas.js';
 
 export class GoogleDriveService extends GoogleService {
   private drive!: drive_v3.Drive;
@@ -18,20 +18,34 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async searchFiles(input: SearchInput): Promise<drive_v3.Schema$File[]> {
+    await this.ensureValidAuth();
+    
+    console.error('DriveService.searchFiles called with input:', JSON.stringify(input, null, 2));
+    
     const { query, page_size } = input;
     const escapedQuery = query.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
     const formattedQuery = `fullText contains '${escapedQuery}'`;
+    console.error('Formatted query:', formattedQuery);
 
-    const res = await this.drive.files.list({
-      q: formattedQuery,
-      pageSize: page_size,
-      fields: "files(id, name, mimeType, modifiedTime, size)",
-    } as drive_v3.Params$Resource$Files$List);
-
-    return res.data.files || [];
+    try {
+      console.error('Calling Google Drive API...');
+      const res = await this.drive.files.list({
+        q: formattedQuery,
+        pageSize: page_size,
+        fields: "files(id, name, mimeType, modifiedTime, size)",
+      } as drive_v3.Params$Resource$Files$List);
+      
+      console.error('Drive API response:', JSON.stringify(res.data, null, 2));
+      return res.data.files || [];
+    } catch (error) {
+      console.error('Drive API error:', error);
+      throw error;
+    }
   }
 
   async createFolder(input: CreateFolder): Promise<drive_v3.Schema$File> {
+    await this.ensureValidAuth();
+    
     const fileMetadata = {
       name: input.name,
       mimeType: 'application/vnd.google-apps.folder',
@@ -48,6 +62,8 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async createFile(input: CreateFile): Promise<drive_v3.Schema$File> {
+    await this.ensureValidAuth();
+    
     const fileMetadata = {
       name: input.name,
       mimeType: input.mimeType,
@@ -70,6 +86,8 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async updateFile(input: UpdateFile): Promise<drive_v3.Schema$File> {
+    await this.ensureValidAuth();
+    
     const media = {
       mimeType: input.mimeType,
       body: input.content,
@@ -85,6 +103,8 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async getFileContent(input: GetFile): Promise<{ mimeType: string; content: string | Buffer }> {
+    await this.ensureValidAuth();
+    
     // First get file metadata to check mime type
     const file = await this.drive.files.get({
       fileId: input.fileId,
@@ -144,6 +164,8 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async getFile(input: GetFile): Promise<drive_v3.Schema$File> {
+    await this.ensureValidAuth();
+    
     const res = await this.drive.files.get({
       fileId: input.fileId,
       fields: input.fields || 'id, name, mimeType, modifiedTime, size',
@@ -153,6 +175,8 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async listFiles(input: ListFiles): Promise<drive_v3.Schema$FileList> {
+    await this.ensureValidAuth();
+    
     const res = await this.drive.files.list({
       q: input.query,
       pageSize: input.pageSize || 100,
@@ -164,6 +188,8 @@ export class GoogleDriveService extends GoogleService {
   }
 
   async updateFileMetadata(input: UpdateFileMetadata): Promise<drive_v3.Schema$File> {
+    await this.ensureValidAuth();
+    
     const res = await this.drive.files.update({
       fileId: input.fileId,
       requestBody: {

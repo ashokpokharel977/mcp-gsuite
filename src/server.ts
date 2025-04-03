@@ -9,6 +9,7 @@ import { OAuth2Client } from "google-auth-library";
 import { GoogleDocsService } from "@/services/docs.js";
 import { GoogleDriveService } from "@/services/drive.js";
 import { GoogleSheetsService } from "@/services/sheets.js";
+import { AuthService } from "@/services/auth.js";
 import {
   SearchInputSchema,
   CreateDocInputSchema,
@@ -33,6 +34,7 @@ export class MCPGoogleSuiteServer {
   private docsService: GoogleDocsService;
   private driveService: GoogleDriveService;
   private sheetsService: GoogleSheetsService;
+  private authService: AuthService;
 
   constructor(auth: OAuth2Client) {
     this.server = new Server(
@@ -48,6 +50,7 @@ export class MCPGoogleSuiteServer {
       }
     );
 
+    this.authService = AuthService.getInstance();
     this.docsService = new GoogleDocsService(auth);
     this.driveService = new GoogleDriveService(auth);
     this.sheetsService = new GoogleSheetsService(auth);
@@ -458,11 +461,20 @@ export class MCPGoogleSuiteServer {
   private setupCallTool(): void {
     this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
       try {
+        console.error(`Handling tool request: ${request.params.name}`);
+        console.error(`Request arguments:`, JSON.stringify(request.params.arguments, null, 2));
+
         switch (request.params.name) {
           // Drive operations
           case "search": {
+            console.error('Parsing search input...');
             const input = SearchInputSchema.parse(request.params.arguments);
+            console.error('Search input parsed:', JSON.stringify(input, null, 2));
+            
+            console.error('Calling Drive searchFiles...');
             const files = await this.driveService.searchFiles(input);
+            console.error(`Found ${files.length} files`);
+            
             const fileList = files
               .map((file) => `${file.name} (${file.mimeType})`)
               .join("\n");
@@ -614,13 +626,20 @@ export class MCPGoogleSuiteServer {
             throw new Error("Tool not found");
         }
       } catch (error) {
+        console.error('Error details:', error);
+        
+        let errorMessage = 'An error occurred: ';
+        if (error instanceof Error) {
+          errorMessage += error.message;
+          if ('cause' in error) {
+            errorMessage += `\nCause: ${JSON.stringify(error.cause)}`;
+          }
+        } else {
+          errorMessage += JSON.stringify(error);
+        }
+
         return {
-          content: [
-            {
-              type: "text",
-              text: error instanceof Error ? error.message : "Unknown error occurred",
-            },
-          ],
+          content: [{ type: "text", text: errorMessage }],
           isError: true,
         };
       }

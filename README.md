@@ -91,7 +91,7 @@ Server configuration:
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/mcp-server-gsuite"
+        "@ashokpokharel977/mcp-server-gsuite"
       ],
       "env": {
         "GOOGLE_CREDENTIALS_PATH": "/path/to/credentials.json",
