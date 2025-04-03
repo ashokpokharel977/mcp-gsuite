@@ -1,6 +1,6 @@
 {
   "name": "@ashokpokharel977/mcp-server-gsuite",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "MCP server for interacting with Google Drive, Sheets, and Docs",
   "license": "MIT",
   "author": "Ashok Pokharel",
