@@ -11,10 +11,27 @@ const RGBColorSchema = z.object({
 const StyleSchema = z.object({
   bold: z.boolean().optional(),
   italic: z.boolean().optional(),
+  underline: z.boolean().optional(),
+  strikethrough: z.boolean().optional(),
   fontSize: z.number().optional(),
   foregroundColor: RGBColorSchema.optional(),
   backgroundColor: RGBColorSchema.optional(),
   heading: z.enum(['NORMAL', 'HEADING_1', 'HEADING_2', 'HEADING_3']).optional(),
+  fontFamily: z.object({
+    family: z.string(),
+    weight: z.number().optional(),
+  }).optional(),
+  alignment: z.enum(['START', 'CENTER', 'END', 'JUSTIFIED']).optional(),
+  lineSpacing: z.number().optional(),
+  spaceAbove: z.number().optional(),
+  spaceBelow: z.number().optional(),
+  indentStart: z.number().optional(),
+  indentEnd: z.number().optional(),
+  indentFirstLine: z.number().optional(),
+  direction: z.enum(['LEFT_TO_RIGHT', 'RIGHT_TO_LEFT']).optional(),
+  keepLinesTogether: z.boolean().optional(),
+  keepWithNext: z.boolean().optional(),
+  pageBreakBefore: z.boolean().optional(),
 });
 
 // Cover page schema
@@ -61,7 +78,14 @@ const GetDocContentInputSchema = z.object({
 
 const UpdateDocContentInputSchema = z.object({
   document_id: z.string(),
-  content: z.string(),
+  content: z.union([
+    z.string(),
+    z.object({
+      text: z.string(),
+      style: StyleSchema.optional(),
+    }),
+    DocumentContentSchema
+  ]),
 });
 
 // Sheets Color Schema

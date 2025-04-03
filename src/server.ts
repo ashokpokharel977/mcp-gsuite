@@ -289,7 +289,82 @@ export class MCPGoogleSuiteServer {
               type: "object",
               properties: {
                 document_id: { type: "string" },
-                content: { type: "string" }
+                content: {
+                  anyOf: [
+                    { type: "string" },
+                    {
+                      type: "object",
+                      properties: {
+                        text: { type: "string" },
+                        style: {
+                          type: "object",
+                          properties: {
+                            bold: { type: "boolean" },
+                            italic: { type: "boolean" },
+                            fontSize: { type: "number" },
+                            foregroundColor: {
+                              type: "object",
+                              properties: {
+                                red: { type: "number", minimum: 0, maximum: 1 },
+                                green: { type: "number", minimum: 0, maximum: 1 },
+                                blue: { type: "number", minimum: 0, maximum: 1 }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      required: ["text"]
+                    },
+                    {
+                      type: "object",
+                      properties: {
+                        coverPage: {
+                          type: "object",
+                          properties: {
+                            title: { type: "string" },
+                            subtitle: { type: "string" },
+                            date: { type: "string" }
+                          },
+                          required: ["title"]
+                        },
+                        headers: {
+                          type: "object",
+                          properties: {
+                            default: { type: "string" },
+                            firstPage: { type: "string" }
+                          }
+                        },
+                        footer: { type: "string" },
+                        body: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                            properties: {
+                              text: { type: "string" },
+                              style: {
+                                type: "object",
+                                properties: {
+                                  bold: { type: "boolean" },
+                                  italic: { type: "boolean" },
+                                  fontSize: { type: "number" },
+                                  foregroundColor: {
+                                    type: "object",
+                                    properties: {
+                                      red: { type: "number", minimum: 0, maximum: 1 },
+                                      green: { type: "number", minimum: 0, maximum: 1 },
+                                      blue: { type: "number", minimum: 0, maximum: 1 }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            required: ["text"]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
               },
               required: ["document_id", "content"]
             }
