@@ -55,10 +55,7 @@ const DocumentSectionSchema = z.object({
 
 // Document content schema
 const DocumentContentSchema = z.object({
-  coverPage: CoverPageSchema.optional(),
-  headers: HeadersSchema.optional(),
-  footer: z.string().optional(),
-  body: z.array(DocumentSectionSchema).optional(),
+  requests: z.array(z.any()), // Allow any request type from Google Docs API
 });
 
 // Tool input schemas
@@ -69,7 +66,6 @@ const SearchInputSchema = z.object({
 
 const CreateDocInputSchema = z.object({
   title: z.string(),
-  content: DocumentContentSchema.optional(),
 });
 
 const GetDocContentInputSchema = z.object({
@@ -78,14 +74,7 @@ const GetDocContentInputSchema = z.object({
 
 const UpdateDocContentInputSchema = z.object({
   document_id: z.string(),
-  content: z.union([
-    z.string(),
-    z.object({
-      text: z.string(),
-      style: StyleSchema.optional(),
-    }),
-    DocumentContentSchema
-  ]),
+  requests: z.array(z.any()), // Allow any request type from Google Docs API
 });
 
 // Sheets Color Schema

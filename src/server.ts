@@ -202,71 +202,11 @@ export class MCPGoogleSuiteServer {
           // Docs Tools
           {
             name: "docs_create",
-            description: "Create a new Google Doc with formatting",
+            description: "Create a new Google Doc",
             inputSchema: {
               type: "object",
               properties: {
-                title: { type: "string" },
-                content: {
-                  type: "object",
-                  properties: {
-                    coverPage: {
-                      type: "object",
-                      properties: {
-                        title: { type: "string" },
-                        subtitle: { type: "string" },
-                        date: { type: "string" }
-                      },
-                      required: ["title"]
-                    },
-                    headers: {
-                      type: "object",
-                      properties: {
-                        default: { type: "string" },
-                        firstPage: { type: "string" }
-                      }
-                    },
-                    footer: { type: "string" },
-                    body: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: {
-                          text: { type: "string" },
-                          style: {
-                            type: "object",
-                            properties: {
-                              bold: { type: "boolean" },
-                              italic: { type: "boolean" },
-                              fontSize: { type: "number" },
-                              foregroundColor: {
-                                type: "object",
-                                properties: {
-                                  red: { type: "number", minimum: 0, maximum: 1 },
-                                  green: { type: "number", minimum: 0, maximum: 1 },
-                                  blue: { type: "number", minimum: 0, maximum: 1 }
-                                }
-                              },
-                              backgroundColor: {
-                                type: "object",
-                                properties: {
-                                  red: { type: "number", minimum: 0, maximum: 1 },
-                                  green: { type: "number", minimum: 0, maximum: 1 },
-                                  blue: { type: "number", minimum: 0, maximum: 1 }
-                                }
-                              },
-                              heading: {
-                                type: "string",
-                                enum: ["NORMAL", "HEADING_1", "HEADING_2", "HEADING_3"]
-                              }
-                            }
-                          }
-                        },
-                        required: ["text"]
-                      }
-                    }
-                  }
-                }
+                title: { type: "string" }
               },
               required: ["title"]
             }
@@ -284,89 +224,20 @@ export class MCPGoogleSuiteServer {
           },
           {
             name: "docs_update_content",
-            description: "Update the content of a Google Doc",
+            description: "Update the content of a Google Doc using batch update requests",
             inputSchema: {
               type: "object",
               properties: {
                 document_id: { type: "string" },
-                content: {
-                  anyOf: [
-                    { type: "string" },
-                    {
-                      type: "object",
-                      properties: {
-                        text: { type: "string" },
-                        style: {
-                          type: "object",
-                          properties: {
-                            bold: { type: "boolean" },
-                            italic: { type: "boolean" },
-                            fontSize: { type: "number" },
-                            foregroundColor: {
-                              type: "object",
-                              properties: {
-                                red: { type: "number", minimum: 0, maximum: 1 },
-                                green: { type: "number", minimum: 0, maximum: 1 },
-                                blue: { type: "number", minimum: 0, maximum: 1 }
-                              }
-                            }
-                          }
-                        }
-                      },
-                      required: ["text"]
-                    },
-                    {
-                      type: "object",
-                      properties: {
-                        coverPage: {
-                          type: "object",
-                          properties: {
-                            title: { type: "string" },
-                            subtitle: { type: "string" },
-                            date: { type: "string" }
-                          },
-                          required: ["title"]
-                        },
-                        headers: {
-                          type: "object",
-                          properties: {
-                            default: { type: "string" },
-                            firstPage: { type: "string" }
-                          }
-                        },
-                        footer: { type: "string" },
-                        body: {
-                          type: "array",
-                          items: {
-                            type: "object",
-                            properties: {
-                              text: { type: "string" },
-                              style: {
-                                type: "object",
-                                properties: {
-                                  bold: { type: "boolean" },
-                                  italic: { type: "boolean" },
-                                  fontSize: { type: "number" },
-                                  foregroundColor: {
-                                    type: "object",
-                                    properties: {
-                                      red: { type: "number", minimum: 0, maximum: 1 },
-                                      green: { type: "number", minimum: 0, maximum: 1 },
-                                      blue: { type: "number", minimum: 0, maximum: 1 }
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            required: ["text"]
-                          }
-                        }
-                      }
-                    }
-                  ]
+                requests: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    additionalProperties: true
+                  }
                 }
               },
-              required: ["document_id", "content"]
+              required: ["document_id", "requests"]
             }
           },
           // Sheets Tools
